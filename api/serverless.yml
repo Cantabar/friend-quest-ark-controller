@@ -1,0 +1,70 @@
+service: acs-api
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+frameworkVersion: '>=1.28.0 <2.0.0'
+
+plugins:
+  - serverless-finch
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: us-west-2
+  stage: dev
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ec2:DescribeInstances"
+        - "ec2:StartInstances"
+        - "ec2:StopInstances"
+      Resource:
+        - "*"
+  apiKeys:
+    - name: ACS-API-Dev
+  stackTags:
+    acs-host: management
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  list:
+    handler: bin/list
+    events:
+      - http:
+          path: list
+          method: get
+          private: true
+          cors: true
+  start:
+    handler: bin/start
+    events:
+      - http:
+          path: start
+          method: post
+          private: true
+          cors: true
+  stop:
+    handler: bin/stop
+    events:
+      - http:
+          path: stop
+          method: post
+          private: true
+          cors: true
+
+# resources:
+#   - ${file(resources/s3-bucket.yml)}
+
+
+custom:
+  client:
+    bucketName: acs-control-center-bucket 

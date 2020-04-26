@@ -1,0 +1,19 @@
+Resources:
+  ControlCenterBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          -
+            AllowedOrigins:
+              - '*'
+            AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            MaxAge: 30000
+
+Outputs:
+  ControlCenterBucketName:
+    Value:
+      Ref: ControlCenterBucket
